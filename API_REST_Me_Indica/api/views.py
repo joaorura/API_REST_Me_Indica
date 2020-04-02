@@ -15,26 +15,26 @@ class LogicQuestionViewSet(viewsets.ModelViewSet):
     queryset = LogicQuestion.objects.all()
     serializer_class = LogicQuestionSerializer
 
-    def options(self, request, *args, **kwargs):
-        return super(LogicQuestionViewSet, self).options(request, args, kwargs)
-
     def create(self, request, *args, **kwargs):
-        if request.data != {}:
-            return super(LogicQuestionViewSet, self).list(request, args, kwargs)
-
         try:
-            list_of_questions = []
-            for i in range(0, 7):
-                question = list(LogicQuestion.objects.filter(level=i))
-                if len(question) == 0:
-                    return Response("Problem In Database", status=status.HTTP_404_NOT_FOUND)
+            if request.data == {}:
+                list_of_questions = []
+                for i in range(0, 7):
+                    question = list(LogicQuestion.objects.filter(level=i))
+                    if len(question) == 0:
+                        return Response("Problem In Database", status=status.HTTP_404_NOT_FOUND)
 
-                question = sample(question, k=nqpl)
-                for j in question:
-                    logic_question_data = copy(LogicQuestionSerializer(j).data)
-                    del logic_question_data["id"]
-                    list_of_questions.append(logic_question_data)
+                    question = sample(question, k=nqpl)
+                    for j in question:
+                        logic_question_data = copy(LogicQuestionSerializer(j).data)
+                        del logic_question_data["id"]
+                        list_of_questions.append(logic_question_data)
 
-            return Response(list_of_questions, status=status.HTTP_201_CREATED)
+                return Response(list_of_questions, status=status.HTTP_201_CREATED)
+            elif type(request.data['note']) == int:
+                print(f"Nota do Usuario: {request.data['note']}")
+                return Response()
+            else:
+                return super(LogicQuestionViewSet, self).create(request, args, kwargs);
         except Exception:
             self.error_message()
