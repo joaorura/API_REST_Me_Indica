@@ -3,7 +3,7 @@ from mongoengine import Document, fields
 
 class LogicQuestion(Document):
     text = fields.StringField(required=True)
-    imgs = fields.ListField(fields.StringField(), required=True)
+    imgs = fields.ListField(fields.StringField())
     alternatives = fields.ListField(fields.StringField(), required=True)
     answer = fields.IntField(required=True)
     level = fields.IntField(required=True)

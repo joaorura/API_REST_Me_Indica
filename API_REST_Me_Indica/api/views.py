@@ -15,6 +15,11 @@ class LogicQuestionViewSet(viewsets.ModelViewSet):
     queryset = LogicQuestion.objects.all()
     serializer_class = LogicQuestionSerializer
 
+    @staticmethod
+    def error_message(request):
+        print(request.data)
+        return Response(status=status.HTTP_400_BAD_REQUEST)
+
     def create(self, request, *args, **kwargs):
         try:
             if request.data == {}:
@@ -31,10 +36,10 @@ class LogicQuestionViewSet(viewsets.ModelViewSet):
                         list_of_questions.append(logic_question_data)
 
                 return Response(list_of_questions, status=status.HTTP_201_CREATED)
-            elif type(request.data['note']) == int:
+            elif 'note' in request.data and type(request.data['note']) == int:
                 print(f"Nota do Usuario: {request.data['note']}")
                 return Response()
             else:
                 return super(LogicQuestionViewSet, self).create(request, args, kwargs)
         except Exception:
-            self.error_message()
+            return self.error_message(request)
